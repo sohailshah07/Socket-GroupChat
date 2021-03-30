@@ -30,14 +30,19 @@ io.on("connection",function (socket)  {
     socket.on('joining message',(userName) => {
         name = userName;
         io.emit('chat message',`---${name} joined the chat---`);
-    })
+    });
 
     socket.on('disconnect',() => {
         console.log("user disconnect")
         io.emit('chat message',`---${name} left the chat---`);
-    })
+    });
 
     socket.on('chat message',(msg)=> {
         socket.broadcast.emit('chat message',msg)
     });
+
+    socket.on('typing',()=>{
+        console.log("user typing")
+        socket.broadcast.emit(`${name} is typing ..`)
+    })
 })
