@@ -19,6 +19,7 @@
   "homepage": "https://github.com/sohailshah07/Socket-GroupChat#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "moment": "^2.29.1",
     "socket.io": "^4.0.0"
   },
   "devDependencies": {
