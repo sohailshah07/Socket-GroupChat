@@ -18,7 +18,7 @@ socket.emit('joinRoom', {username, room});
 //get room and Users
 socket.on('roomUsers',({room , users}) => {
     outputRoomName(room);
-    outputUsers(room);
+    outputUsers(users);
 
 })
 
@@ -63,8 +63,11 @@ function outputRoomName(room) {
 }
 
 //add user to DOM
-function outputUsers(user){
-    userList.innerHTML = `
-    ${users.map(user => `<li>${user.username}</li>`).join('')}
-    `;
+function outputUsers(users){
+    userList.innerHTML = '';
+  users.forEach((user) => {
+    const li = document.createElement('li');
+    li.innerText = user.username;
+    userList.appendChild(li);
+  });
 }
