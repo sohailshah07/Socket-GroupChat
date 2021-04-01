@@ -13,15 +13,22 @@ dotenv.config();
 app.use(express.static(path.join(__dirname, 'public')));
 
 //run when a clint connect
-io.on('connection', socket => {
-    console.log('New WS connection ...');
 
+io.on('connection', socket => {
+
+    //welcome currenrt user
     socket.emit('message', 'welcome to ChatCord');
-    socket.emit('pop',"trying socket");
+
+    //Broadcast when a user connect
+    socket.broadcast.emit('message', 'A user has joined the chat');
+
+    // Runs when the clint disconnect
+    socket.on('disconnect', () =>{
+        io.emit('message', 'A user has left the chat');
+    })
 })
 
 const PORT = process.env.PORT || 3000;
-
 
 server.listen(PORT,() => {
     console.log('listening on port '+ PORT);
