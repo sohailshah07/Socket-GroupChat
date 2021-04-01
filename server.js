@@ -6,7 +6,8 @@ const socketio = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const io =socketio(server);
-
+const dotenv = require('dotenv');
+dotenv.config();
 
 //set static folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -16,12 +17,13 @@ io.on('connection', socket => {
     console.log('New WS connection ...');
 
     socket.emit('message', 'welcome to ChatCord');
+    socket.emit('pop',"trying socket");
 })
 
 const PORT = process.env.PORT || 3000;
 
 
 server.listen(PORT,() => {
-    console.log('listening on port'+ PORT);
+    console.log('listening on port '+ PORT);
     console.log('http://localhost:'+PORT);
 })
