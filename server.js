@@ -3,7 +3,7 @@ const http = require('http');
 const path = require('path');
 const socketio = require('socket.io');
 const formatMessage= require('./utils/messages');
-const { userJoin, getCurrentUser }= require('./utils/users');
+const { userJoin, getCurrentUser, userLeave, getRoomUser }= require('./utils/users');
 
 const app = express();
 const server = http.createServer(app);
@@ -33,8 +33,13 @@ io.on('connection', socket => {
     .emit(
         'message', 
         formatMessage(botName, `${user.username} has joined the chat`));
-
-    })
+    
+    //send user and room info
+    io.to(user.room).emit('roomUsers', {
+        room : user.room,
+        users : getRoomUser(user.room)
+    });
+})
 
        
     //listen for chat messages
@@ -43,9 +48,17 @@ io.on('connection', socket => {
         io.to(user.room).emit('message',formatMessage(user.username, msg));
     })
 
-    // Runs when the clint disconnect
+    // Runs when the user disconnect
     socket.on('disconnect', () =>{
-        io.emit('message', formatMessage(botName, `${user.username} has left the chat`));
+        const user =userLeave(socket.id);
+        if(user){
+        io.to(user.room).emit('message', formatMessage(botName, `${user.username} has left the chat`));
+        //send user and room info
+        io.to(user.room).emit('roomUsers', {
+            room : user.room,
+            users : getRoomUser(user.room)
+        });   
+        }
     })
 
 })
